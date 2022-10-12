@@ -13,6 +13,44 @@ const StressForm = () => {
   const [data, setData] = React.useState<StressProps>({
     stress_level: "1",
   });
+  const [history, setHistory] = React.useState<StressProps[] | []>([]);
+  const [isSubmitted, setIsSubmitted] = React.useState<boolean>(false);
+  const [image, setImage] = React.useState<File | null>(null);
+
+  const fetchHistory = () => {
+    StressTrackApi.getAll().then((response) => {
+      if (!response.error) {
+        setHistory(response.data!);
+      }
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const response = await StressTrackApi.create({
+      values: data,
+      image: image as File,
+    });
+    if (!response.imgError && !response.error && !response.sizeError) {
+      alert("Insert success...");
+    } else {
+      if (response.imgError) alert(response.imgError);
+      if (response.error) alert(response.error);
+      if (response.sizeError) alert(response.sizeError);
+    }
+    setIsSubmitted(true);
+  };
+
+  const handleChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setImage(e.target.files[0]);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchHistory();
+    if (isSubmitted) setIsSubmitted(false);
+  }, [isSubmitted]);
 
   return (
     <div>
@@ -20,14 +58,14 @@ const StressForm = () => {
         Track current stress level
       </h1>
       <form
-        onSubmit={(e) => {}}
+        onSubmit={(e) => handleSubmit(e)}
         className="flex flex-col items-center justify-center gap-2"
       >
         <InputField
           label="Upload Image"
           type={"file"}
           accept="image/*"
-          onChange={(e) => {}}
+          onChange={(e) => handleChangeImage(e)}
           className="block w-auto text-sm rounded-lg border cursor-pointer text-gray-400 focus:outline-none bg-gray-700 border-gray-600 placeholder-gray-400"
           required
         />
@@ -48,6 +86,7 @@ const StressForm = () => {
           value="Submit"
         />
       </form>
+      <TrackHistory history={history} />
     </div>
   );
 };
