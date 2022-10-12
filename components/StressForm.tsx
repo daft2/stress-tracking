@@ -15,6 +15,7 @@ const StressForm = () => {
   });
   const [history, setHistory] = React.useState<StressProps[] | []>([]);
   const [isSubmitted, setIsSubmitted] = React.useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = React.useState<boolean>(false);
   const [image, setImage] = React.useState<File | null>(null);
 
   const fetchHistory = () => {
@@ -27,6 +28,7 @@ const StressForm = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsSubmitting(true);
     const response = await StressTrackApi.create({
       values: data,
       image: image as File,
@@ -39,6 +41,7 @@ const StressForm = () => {
       if (response.sizeError) alert(response.sizeError);
     }
     setIsSubmitted(true);
+    setIsSubmitting(false);
   };
 
   const handleChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -82,8 +85,9 @@ const StressForm = () => {
         />
         <InputField
           type={"submit"}
-          className="border border-indigo-300 hover:bg-indigo-300/50 rounded p-1 cursor-pointer mt-2"
+          className="border border-indigo-300 hover:bg-indigo-300/50 rounded p-1 cursor-pointer mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
           value="Submit"
+          disabled={isSubmitting}
         />
       </form>
       <TrackHistory history={history} />
