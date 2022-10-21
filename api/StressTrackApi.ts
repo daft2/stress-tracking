@@ -37,11 +37,6 @@ const StressTrackApi = {
 
     return { data, error };
   },
-  test: async () => {
-    return axios.get(
-      "https://asia-southeast2-sejutacita-app.cloudfunctions.net/fee-assessment-books"
-    );
-  },
 };
 
 export default StressTrackApi;

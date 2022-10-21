@@ -52,7 +52,6 @@ const StressForm = () => {
 
   React.useEffect(() => {
     fetchHistory();
-    StressTrackApi.test().then((response) => console.log(response.data))
     if (isSubmitted) setIsSubmitted(false);
   }, [isSubmitted]);
 
