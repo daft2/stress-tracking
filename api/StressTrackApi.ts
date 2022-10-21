@@ -1,3 +1,4 @@
+import axios from "axios";
 import { StressProps } from "../components/StressForm";
 import { supabase } from "../lib/supabaseClient";
 
@@ -35,6 +36,11 @@ const StressTrackApi = {
     const { data, error } = await supabase.from("track").select("*");
 
     return { data, error };
+  },
+  test: async () => {
+    return axios.get(
+      "https://asia-southeast2-sejutacita-app.cloudfunctions.net/fee-assessment-books"
+    );
   },
 };
 
